@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Query API</title>
+</head>
+<body>
+
+    <h1>Document Query API</h1>
+
+    <!-- Form to upload a document -->
+    <form action="http://localhost:5000/upload" method="post" enctype="multipart/form-data">
+        <label for="file">Upload Document:</label>
+        <input type="file" name="file" accept=".txt">
+        <button type="submit" onclick="uploadDocument()">Upload</button>
+    </form>
+
+    <hr>
+
+    <div id="currentFiles"></div>
+
+    <hr>
+
+    <!-- Form to query with a prompt -->
+    <form id="queryForm">
+        <label for="prompt">Enter Prompt:</label>
+        <input type="text" id="prompt" name="prompt" required>
+        <button type="button" onclick="query()">Query</button>
+    </form>
+
+    <!-- Display the response -->
+    <div id="response"></div>
+
+    <button type="button" onclick="clearData()">Clear Data</button>
+
+    <script>
+        window.addEventListener('beforeunload', clearData);
+
+        displayCurrentFiles();
+
+        async function uploadDocument() {
+            const form = document.getElementById("uploadForm");
+            const formData = new FormData(form);
+
+            await fetch('http://localhost:5000/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            alert('Document uploaded and query engine created');
+        }
+        
+        async function query() {
+            const prompt = document.getElementById("prompt").value;
+
+            const response = await fetch('http://localhost:5000/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ prompt }),
+            });
+
+            const result = await response.json();
+            document.getElementById("response").innerText = `Response: ${result.response}`;
+        }
+
+        async function clearData() {
+            const response = await fetch('http://localhost:5000/clear', {
+                method: 'GET',
+            });
+
+            alert('Data cleared');
+        }
+
+        async function displayCurrentFiles() {
+            const filesResponse = await fetch('http://localhost:5000/files', {
+            method: 'GET',
+            });
+            const filesResult = await filesResponse.json();
+            const filesContainer = document.getElementById("currentFiles");
+            filesContainer.innerHTML = `Current Files: ${filesResult.files.join(', ')}`;
+        }
+    </script>
+
+</body>
+</html>
