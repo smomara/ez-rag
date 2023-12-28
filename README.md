@@ -6,7 +6,7 @@ This project is very much rudimentary and needs a lot of refactoring for actual 
 
 ## Getting Started
 To use ez-rag, follow these steps:
-'''bash
+```bash
 # Clone the repository
 git clone https://github.com/smomara/ez-rag.git
 # Enter the repository
@@ -19,7 +19,7 @@ cat "OPENAI_API_KEY=your_openai_api_key > .env # replace with your actual OpenAI
 mkdir data
 # Run the application
 python app.py
-'''
+```
 This will start the application, which will be accesible at http://localhost:5000
 
 ## Usage
